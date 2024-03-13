@@ -51,7 +51,8 @@ header {
     border: none;
     border-radius: 5rem;
     width: 100%;
-    padding-inline-start: 10rem;
+    /* padding-inline-start: 10rem; */
+    text-align: center;
     transition: padding-inline-start .2s;
 }
 
