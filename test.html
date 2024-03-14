@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meal Search</title>
+<style>
+    .meal-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+    .meal {
+        cursor: pointer;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 200px;
+    }
+    .meal img {
+        width: 100%;
+        height: auto;
+        border-radius: 5px;
+    }
+    .meal-details {
+        display: none;
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+</style>
+</head>
+<body>
+<h1>Meal Search</h1>
+<input type="text" id="searchInput" placeholder="Search for a meal">
+<div class="meal-container" id="mealResults"></div>
+
+<div id="mealDetails" style="display:none;">
+    <h2 id="mealName"></h2>
+    <div id="mealIngredients"></div>
+    <p id="mealInstructions"></p>
+</div>
+
+<script>
+function fetchMealDetails(mealId) {
+    const apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.meals) {
+                const meal = data.meals[0];
+                const mealName = meal.strMeal;
+                const mealInstructions = meal.strInstructions;
+                const mealIngredients = [];
+
+                for (let i = 1; i <= 20; i++) {
+                    const ingredient = meal[`strIngredient${i}`];
+                    const measure = meal[`strMeasure${i}`];
+                    if (ingredient) {
+                        mealIngredients.push(`${measure} ${ingredient}`);
+                    } else {
+                        break;
+                    }
+                }
+
+                document.getElementById('mealName').textContent = mealName;
+                document.getElementById('mealIngredients').innerHTML = '<h3>Ingredients:</h3>' + mealIngredients.map(ingredient => `<div>${ingredient}</div>`).join('');
+                document.getElementById('mealInstructions').textContent = mealInstructions;
+
+                document.getElementById('mealDetails').style.display = 'block';
+            } else {
+                console.error('Meal details not found.');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching meal details:', error);
+        });
+}
+
+function searchMeal() {
+    const searchInput = document.getElementById('searchInput').value.trim();
+    if (searchInput === '') {
+        document.getElementById('mealResults').innerHTML = '';
+        return;
+    }
+
+    const apiUrl = `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchInput}`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const mealResults = document.getElementById('mealResults');
+            mealResults.innerHTML = ''; // Clear previous results
+            if (data.meals) {
+                data.meals.forEach(meal => {
+                    const mealName = meal.strMeal;
+                    const mealImage = meal.strMealThumb;
+                    const mealId = meal.idMeal;
+
+                    const mealElement = document.createElement('div');
+                    mealElement.classList.add('meal');
+                    mealElement.innerHTML = `
+                        <h3>${mealName}</h3>
+                        <img src="${mealImage}" alt="${mealName}">
+                    `;
+                    mealElement.addEventListener('click', () => {
+                        fetchMealDetails(mealId);
+                    });
+
+                    mealResults.appendChild(mealElement);
+                });
+            } else {
+                mealResults.innerHTML = 'No meals found.';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+document.getElementById('searchInput').addEventListener('input', searchMeal);
+</script>
+</body>
+</html>
