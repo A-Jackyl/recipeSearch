@@ -88,8 +88,7 @@ footer ul * {
 
 .searchedRecipeArray {
     margin-block: 2rem;
-    /* display: grid; */
-    display: none;
+    display: grid;
     grid-template-columns: repeat(2, 1fr);;
 }
 
