@@ -73,6 +73,8 @@ function displayRandomMealCards(num) {
     }
 }
 
+
+
 function searchMeal() {
     const searchInput = document.getElementById('searchInput').value.trim();
     if (searchInput === '') {
