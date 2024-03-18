@@ -7,7 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-    <script src="/assets/js/script.js" defer></script>
     <title>Yum Yum</title>
 </head>
 <body>
@@ -19,84 +18,19 @@
         </div>
     </header>
     <main>
-        <div class="container">
-            <div id="meals" class="meals-container"></div>
-        </div>
-    
-        <div id="modal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2 id="meal-title"></h2>
-                <div id="ingredients"></div>
-                <p id="instructions"></p>
-            </div>
-        </div>
-
-        <!-- ------------ -->
-        <section class="searchedRecipeArray wrapper">
-            <h2>Søgte produkter:</h2>
-            <div class="recipeCard">
-                <img src="https://source.unsplash.com/random" alt="unsplash random">
-                <h3>Beefy Burrito</h3>
-                <div class="recipeCardBottom">
-                    <img src="assets/svg/star.svg" alt="star">
-                    <div class="clickRecipe">
-                        Se opskrift
-                        <img src="assets/svg/arrow.svg" alt="arrow">
-                    </div>
-                </div>
-            </div>
-            <div class="recipeCard">
-                <img src="https://source.unsplash.com/random" alt="unsplash random">
-                <h3>Beefy Burrito</h3>
-                <div class="recipeCardBottom">
-                    <img src="assets/svg/star.svg" alt="star">
-                    <div class="clickRecipe">
-                        Se opskrift
-                        <img src="assets/svg/arrow.svg" alt="arrow">
-                    </div>
-                </div>
-            </div>
-            <div class="recipeCard">
-                <img src="https://source.unsplash.com/random" alt="unsplash random">
-                <h3>Beefy Burrito</h3>
-                <div class="recipeCardBottom">
-                    <img src="assets/svg/star.svg" alt="star">
-                    <div class="clickRecipe">
-                        Se opskrift
-                        <img src="assets/svg/arrow.svg" alt="arrow">
-                    </div>
-                </div>
-            </div>
-            <div class="recipeCard">
-                <img src="https://source.unsplash.com/random" alt="unsplash random">
-                <h3>Beefy Burrito</h3>
-                <div class="recipeCardBottom">
-                    <img src="assets/svg/star.svg" alt="star">
-                    <div class="clickRecipe">
-                        Se opskrift
-                        <img src="assets/svg/arrow.svg" alt="arrow">
-                    </div>
-                </div>
-            </div>
+        <h2>Søgte produkter:</h2>
+        <section id=""></section>
+        <section id="searchedRecipeArray" class="searchedRecipeArray wrapper">
         </section>
-        <section class="fullRecipe">
-            <img src="https://source.unsplash.com/random" alt="recipeImage" class="recipeImage">
-            <h2>Beefy Burrito</h2>
-            <ul class="ingredientsList">
-                <h3 class="listTitle">Ingredienser:</h3>
-                <li>Mælk</li>
-                <li>Ost</li>
-                <li>Smør</li>
-                <li>Wrap</li>
-                <li>Bøf</li>
+        <div id="mealCards" class="searchedRecipeArray"></div>
+        <section id="fullRecipe" class="fullRecipe">
+            <img id="recipeGoBack" src="assets/svg/arrow.svg" alt="arrow">
+            <img alt="recipeImage" class="recipeImage" id="recipeImage">
+            <h2 id="recipeName"></h2>
+            <ul id="ingredientsList" class="ingredientsList">
+                <h3 class="listTitle"></h3>
             </ul>
-            <ol class="recipeList">
-                <h3 class="listTitle">Instruktioner:</h3>
-                <li>Lav maden</li>
-                <li>Varm den op</li>
-                <li>Spis den!</li>
-            </ol>
+            <p id="recipeList" class="recipeList"></p>
         </section>
     </main>
     <footer>
@@ -107,5 +41,6 @@
             <img src="assets/svg/logo.svg" alt="logo" class="footerLogo">
         </ul>
     </footer>
+    <script src="assets/js/script.js"></script>
 </body>
 </html>

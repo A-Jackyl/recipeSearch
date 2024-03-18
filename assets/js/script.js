@@ -1,94 +1,140 @@
+displayRandomMealCards(6); // Display 6 random meal cards
 
-// MODEL CODE
+function fetchMealDetails(mealId) {
+    const apiUrl = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${mealId}`;
 
-// fetch api 
-
-// Function to fetch all meals from TheMealDB API
-async function fetchAllMeals() {
-    try {
-      const response = await fetch('https://www.themealdb.com/api/json/v1/1/search.php?s=');
-      const data = await response.json();
-      return data.meals;
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      return null;
-    }
-  }
-  
-  // Example usage: fetching all meals
-  fetchAllMeals()
-    .then(meals => {
-      if (meals) {
-        console.log('All meals:', meals);
-        // You can do further processing or display of the fetched data here
-      } else {
-        console.log('No meals found.');
-      }
-    })
-    .catch(error => console.error('Error:', error));
-  
-
-
-// CONTROLLER CODE
-
-// VIEW CODE
-
-document.addEventListener('DOMContentLoaded', () => {
-    const mealsContainer = document.getElementById('meals');
-    const modal = document.getElementById('modal');
-    const closeBtn = document.getElementsByClassName('close')[0];
-    const mealTitle = document.getElementById('meal-title');
-    const ingredients = document.getElementById('ingredients');
-    const instructions = document.getElementById('instructions');
-
-    // Fetch meals from API
-    fetch('https://www.themealdb.com/api/json/v1/1/random.php')
+    fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-            const meals = data.meals;
-            meals.forEach(meal => {
-                const mealCard = document.createElement('div');
-                mealCard.classList.add('meal-card');
-                mealCard.innerHTML = `
-                    <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
-                    <p>${meal.strMeal}</p>
-                `;
-                mealCard.addEventListener('click', () => {
-                    showMealDetails(meal);
-                });
-                mealsContainer.appendChild(mealCard);
-            });
-        })
-        .catch(error => console.log('Error fetching data:', error));
+            if (data.meals) {
+                const meal = data.meals[0];
+                const mealName = meal.strMeal;
+                const mealInstructions = meal.strInstructions;
+                const mealIngredients = [];
+                const mealImage = meal.strMealThumb;
 
-    // Show meal details in modal
-    function showMealDetails(meal) {
-        mealTitle.textContent = meal.strMeal;
-        ingredients.innerHTML = '';
-        instructions.textContent = meal.strInstructions;
-        
-        for (let i = 1; i <= 20; i++) {
-            if (meal[`strIngredient${i}`]) {
-                const ingredient = document.createElement('p');
-                ingredient.textContent = `${meal[`strIngredient${i}`]} - ${meal[`strMeasure${i}`]}`;
-                ingredients.appendChild(ingredient);
+                for (let i = 1; i <= 20; i++) {
+                    const ingredient = meal[`strIngredient${i}`];
+                    const measure = meal[`strMeasure${i}`];
+                    if (ingredient) {
+                        mealIngredients.push(`${measure} ${ingredient}`);
+                    } else {
+                        break;
+                    }
+                }
+                document.getElementById('recipeImage').src = mealImage;
+                document.getElementById('recipeName').textContent = mealName;
+                document.getElementById('ingredientsList').innerHTML = '<h3>Ingredienser:</h3>' + mealIngredients.map(ingredient => `<li>${ingredient}</li>`).join('');
+                document.getElementById('recipeList').innerHTML = '<h3 class="listTitle">Instruktioner:</h3>' + mealInstructions;
+
+                document.getElementById('fullRecipe').style.display = 'flex';
             } else {
-                break;
+                console.error('Meal details not found.');
             }
-        }
-        
-        modal.style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error fetching meal details:', error);
+        });
+}
+
+function displayRandomMealCards(num) {
+    const mealCardsContainer = document.getElementById('mealCards');
+    mealCardsContainer.innerHTML = ''; // Clear previous cards
+
+    for (let i = 0; i < num; i++) {
+        fetch(`https://www.themealdb.com/api/json/v1/1/random.php`)
+            .then(response => response.json())
+            .then(data => {
+                const meal = data.meals[0];
+                const mealName = meal.strMeal;
+                const mealImage = meal.strMealThumb;
+                const mealId = meal.idMeal;
+
+                const mealCard = document.createElement('div');
+                mealCard.classList.add('recipeCard');
+                mealCard.innerHTML = `
+                    <img src="${mealImage}" alt="opskrift_billede">
+                    <h3>${mealName}</h3>
+                    <div class="recipeCardBottom">
+                        <img src="assets/svg/star.svg" alt="star">
+                        <div class="clickRecipe">
+                            Se opskrift
+                            <img src="assets/svg/arrow.svg" alt="arrow">
+                        </div>
+                    </div>`;
+                mealCard.addEventListener('click', () => {
+                    mealCardsContainer.style.display = 'none';
+                    fetchMealDetails(mealId);
+                });
+
+                mealCardsContainer.appendChild(mealCard);
+            })
+            .catch(error => console.error('Error fetching meal:', error));
+    }
+}
+
+function searchMeal() {
+    const searchInput = document.getElementById('searchInput').value.trim();
+    if (searchInput === '') {
+        document.getElementById('searchedRecipeArray').innerHTML = '';
+        displayRandomMealCards(6); // Display random meal cards when search input is cleared
+        return;
     }
 
-    // Close modal when clicking on close button
-    closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
+    const apiUrl = `https://www.themealdb.com/api/json/v1/1/search.php?s=${searchInput}`;
 
-    // Close modal when clicking outside of it
-    window.addEventListener('click', event => {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-    });
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const mealResults = document.getElementById('searchedRecipeArray');
+            mealResults.innerHTML = ''; // Clear previous results
+            mealResults.style.display = 'grid';
+            if (data.meals) {
+                data.meals.forEach(meal => {
+                    const mealName = meal.strMeal;
+                    const mealImage = meal.strMealThumb;
+                    const mealId = meal.idMeal;
+
+                    const mealElement = document.createElement('div');
+                    mealElement.classList.add('recipeCard');
+                    mealElement.innerHTML = `
+                    <img src="${mealImage}" alt="opskrift_billede">
+                    <h3>${mealName}</h3>
+                    <div class="recipeCardBottom">
+                        <img src="assets/svg/star.svg" alt="star">
+                        <div class="clickRecipe">
+                            Se opskrift
+                            <img src="assets/svg/arrow.svg" alt="arrow">
+                        </div>
+                    </div>`;
+                    mealElement.addEventListener('click', () => {
+                        mealResults.style.display = 'none';
+                        fetchMealDetails(mealId);
+                    });
+
+                    mealResults.appendChild(mealElement);
+                });
+            } else {
+                mealResults.innerHTML = 'Din søgning fandt ingen opskrift :(';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+}
+
+function clearMealCards() {
+    document.getElementById('mealCards').innerHTML = '';
+}
+
+document.getElementById('searchInput').addEventListener('input', () => {
+    clearMealCards();
+    searchMeal();
+});
+
+var refreshButton = document.getElementById('recipeGoBack');
+
+refreshButton.addEventListener('click', function () {
+    document.getElementById('searchedRecipeArray').style.display = 'grid';
+    document.getElementById('fullRecipe').style.display = 'none';
 });
