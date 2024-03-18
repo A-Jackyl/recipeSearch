@@ -125,9 +125,9 @@ function searchMeal() {
         });
 }
 
-function clearMealCards() {
-    document.getElementById('mealCards').innerHTML = '';
-}
+ function clearMealCards() {
+     document.getElementById('mealCards').innerHTML = '';
+ }
 
 document.getElementById('searchInput').addEventListener('input', () => {
     clearMealCards();
